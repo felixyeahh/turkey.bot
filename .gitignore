@@ -1,0 +1,5 @@
+config.ini
+run.sh
+__pychache__/
+venv/
+database.db
