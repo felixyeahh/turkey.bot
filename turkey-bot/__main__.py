@@ -15,16 +15,16 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from loguru import logger
-import asyncio
+
 import sys
 import json
 import string
 
-from aiogram import Bot, Dispatcher
-from aiogram.utils import executor
-from aiogram.types import Message
+from aiogram.utils import executor, deep_linking
+from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.dispatcher.filters import Text
-from .bot import dp
+
+from .bot import dp, bot, Bot, Dispatcher
 from .database.database import get_engine, connect_database, check_turkey, new_turkey
 
 if sys.version_info < (3, 8, 0):
@@ -44,6 +44,18 @@ async def on_startup(dp: Dispatcher):
     except Exception as e:
         return logger.exception(e)
 
+@dp.message_handler(commands=['start'], commands_prefix='/')
+async def startcmd(message: Message):
+    if message.chat.type == 'private':
+        return await message.reply('''👾 <b>TurkeyBot</b> - <i>бот, который не любит нецензурную лексику!</i>
+
+• я отправляю каждому человеку, который написал в своём сообщении мат, свой любимый хэштег - #ктоМатеритсяТотИндюк 
+• я считаю индюков пользователя и чата
+• можно посмотреть сколько индюков у пользователя/чата с помощью <code>сколько индюков?</code>''', parse_mode='html', reply_markup=InlineKeyboardMarkup()\
+    .add(InlineKeyboardButton('🐸 Добавить в свой чат', 't.me/baffuturkeybot?startgroup=hi')))
+
+    return bot.send_message(message.chat.id, '👾 Добрый день, чат! Спасибо за добавление бота :3')
+    
 @dp.message_handler(Text(startswith='сколько индюков', ignore_case=True))
 async def check_turkey_cmd(message: Message):
     if message.reply_to_message:
@@ -54,10 +66,11 @@ async def check_turkey_cmd(message: Message):
         text = '🐸 У вас'
     turkey = check_turkey(message.bot.get('engine'), user_id, message.chat.id)
 
-    return await message.reply(f'{text} {turkey[0]} индюков.\n\n🛸 Всего индюков в чате: {turkey[1]}')
+    await message.reply(f'{text} {turkey[0]} индюков.\n\n🛸 Всего индюков в чате: {turkey[1]}')
+    return turkey_handler(message)
 
 @dp.message_handler()
-async def turkey(message: Message):
+async def turkey_handler(message: Message):
     try:
         user_id = message.from_user.id
         chat_id = message.chat.id

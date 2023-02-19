@@ -90,9 +90,9 @@ def update_chat(engine: create_engine, chat_id: str, field_name: str, value: int
             setattr(chat, field_name, value)
             session.add(chat)
             session.commit()
-            logger.info(f'user {chat_id} updated')
+            logger.info(f'chat {chat_id} updated')
         except exc.CompileError:
-            logger.warning(f'user {chat_id} was not updated')
+            logger.warning(f'chat {chat_id} was not updated')
             return False
     return True 
 
@@ -107,7 +107,7 @@ def new_turkey(engine: object, user_id: str, chat_id: str) -> None:
     if not chat:
         chat = create_chat(engine, {'chat_id': chat_id, 'chat_turkey': 1})
     else:
-        update_chat(engine, chat_id, 'chat_turkey', getattr(chat, 'chat_turkey'))
+        update_chat(engine, chat_id, 'chat_turkey', getattr(chat, 'chat_turkey') + 1)
     return
 
 def check_turkey(engine: object, user_id: str, chat_id: str) -> Tuple[int, int]:
