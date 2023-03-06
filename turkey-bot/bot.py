@@ -41,13 +41,11 @@ if not config.read("./config.ini"):
     config['bot'] = {
         "token": colored_input("Enter your bot token: ")
     }
-    config_setted = True
     with open('./config.ini', 'w') as file:
         config.write(file)
-        if config_setted == True:
-            logger.success('config is succesfully setted up. Now, restart the bot.')
-            sys.exit(1)
-
+        logger.success('config is succesfully setted up. Now, restart the bot.')
+        sys.exit(1)
+        
 config.read('./config.ini')
 TOKEN = config.get('bot', 'token')
 

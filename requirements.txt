@@ -1,0 +1,5 @@
+aiogram==2.23.1
+loguru==0.6.0
+pipreqs==0.4.11
+SQLAlchemy==1.4.41
+sqlmodel==0.0.8
