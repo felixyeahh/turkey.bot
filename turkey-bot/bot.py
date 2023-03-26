@@ -28,12 +28,16 @@ config = configparser.ConfigParser()
 def colored_input(prompt: str = "", hide: bool = False) -> str:
     """beatiful colored user input"""
     frame = sys._getframe(1)
-    return (input if not hide else getpass)(
+    return (getpass if hide else input)(
         "\x1b[32m{time:%Y-%m-%d %H:%M:%S}\x1b[0m | "
         "\x1b[1m{level: <8}\x1b[0m | "
         "\x1b[36m{name}\x1b[0m:\x1b[36m{function}\x1b[0m:\x1b[36m{line}\x1b[0m - \x1b[1m{prompt}\x1b[0m".format(
-            time=datetime.now(), level="INPUT", name=frame.f_globals["__name__"],
-            function=frame.f_code.co_name, line=frame.f_lineno, prompt=prompt
+            time=datetime.now(),
+            level="INPUT",
+            name=frame.f_globals["__name__"],
+            function=frame.f_code.co_name,
+            line=frame.f_lineno,
+            prompt=prompt,
         )
     )
 
